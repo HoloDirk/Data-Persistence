@@ -1,38 +1,36 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using System.IO; //manipulates data streams between scenes
 
 public class MainManager : MonoBehaviour
 {
-
-    public static MainManager Instance; //static class variable to allow sharing via instances 
-    public Text textInput; //variable to pass the etxt to the other scene
-
     public Brick BrickPrefab;
     public int LineCount = 6;
     public Rigidbody Ball;
 
     public Text ScoreText;
+
+    //User current player and best score player
+    public Text inputCurrent;
+    public Text inputBest;
+
     public GameObject GameOverText;
-    
+
     private bool m_Started = false;
     private int m_Points;
     
     private bool m_GameOver = false;
 
-    private void Awake() //Awake method
-    {
-        if (Instance != null) //conditional statement to check whether or not Instance is null
-        {
-            Destroy(gameObject); //first time that you launch the Menu scene, no MainManager will have filled the Instance variable. This means it will be null, so the condition will not be met, and the script will continue
-            return;
-        }
+    //Static variables to manipulate data stream of the best player
+    private static int bestScore;
+    private static string bestPlayer;
 
-        Instance = this; // if you load the Menu scene again later, there will already be one MainManager in existence, so Instance will not be null. In this case, the condition is met: the extra MainManager is destroyed and the script exits there.
-        DontDestroyOnLoad(gameObject); //this is a "singleton"
+    private void Awake() //displays the player rank upon start data persistance between sessions
+    {
+        LoadGameRank();
     }
 
     // Start is called before the first frame update
@@ -52,6 +50,11 @@ public class MainManager : MonoBehaviour
                 brick.onDestroyed.AddListener(AddPoint);
             }
         }
+    
+
+        inputCurrent.text = ReadInput.Instance.input;
+
+        SetBestPlayer();
     }
 
     private void Update()
@@ -81,12 +84,73 @@ public class MainManager : MonoBehaviour
     void AddPoint(int point)
     {
         m_Points += point;
+        ReadInput.Instance.Score = m_Points;
         ScoreText.text = $"Score : {m_Points}";
     }
 
     public void GameOver()
     {
         m_GameOver = true;
+        CheckBestPlayer();
         GameOverText.SetActive(true);
+    }
+
+    private void CheckBestPlayer()
+    {
+        int currentScore = ReadInput.Instance.Score;
+
+        if(currentScore > bestScore)
+        {
+            bestPlayer = ReadInput.Instance.input;
+            bestScore = currentScore;
+
+            inputBest.text = $"High Score - {bestPlayer}: {bestScore}";
+
+            SaveGameRank(bestPlayer, bestScore);
+        }
+    }
+
+    private void SetBestPlayer()
+    {
+    if (bestPlayer == null && bestScore == 0)
+        {
+            inputBest.text = "";
+        }
+    else
+        {
+            inputBest.text = $"High Score - {bestPlayer}: {bestScore}";
+        }
+    }
+
+    public void SaveGameRank(string bestPlayerName, int bestPlayerScore)
+    {
+        SaveData data = new SaveData();
+
+        data.TheBestPlayer = bestPlayerName;
+        data.HighestScore = bestPlayerScore;
+
+        string json = JsonUtility.ToJson(data);
+        File.WriteAllText(Application.persistentDataPath + "/savefile.json", json);
+    }
+
+    public void LoadGameRank()
+    {
+        string path = Application.persistentDataPath + "/savefile.json";
+
+        if (File.Exists(path))
+        {
+            string json = File.ReadAllText(path);
+            SaveData data = JsonUtility.FromJson<SaveData>(json);
+
+            bestPlayer = data.TheBestPlayer;
+            bestScore = data.HighestScore;
+        }
+    }
+
+    [System.Serializable]
+    class SaveData
+    {
+        public int HighestScore;
+        public string TheBestPlayer;
     }
 }

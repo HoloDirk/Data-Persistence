@@ -1,32 +1,29 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
-
 
 public class ReadInput : MonoBehaviour
 {
-    
-    public string input; //variable to store the InputField text
+    //static class for saving data stream of current user aka singleton
+    public static ReadInput Instance;
+    public string input; //variable to store the InputField text of player
                          // Start is called before the first frame update
+    public int Score;
 
-
-
-    void Start()
+    private void Awake() //Awake method
     {
-        
+        if (Instance != null) //conditional statement to check whether or not Instance is null
+        {
+            Destroy(gameObject); //first time that you launch the Menu scene, no MainManager will have filled the Instance variable. This means it will be null, so the condition will not be met, and the script will continue
+            return;
+        }
+
+        Instance = this; // if you load the Menu scene again later, there will already be one MainManager in existence, so Instance will not be null. In this case, the condition is met: the extra MainManager is destroyed and the script exits there.
+        DontDestroyOnLoad(gameObject); //this is a "singleton"
     }
 
-    // Update is called once per frame
-    void Update()
+    public void ReadStringInput(string s) //takes the stream of data from InputField aka ReadInput that has game object InputText with script ReadInput
     {
-        
-    }
-
-    public void ReadStringInput(string s) //function to look at a string  and its parameter like s
-    {
-        input = s; //here we assign the variable to the string s parameter
-                    //must also make empty game object add script to game object and drag it into the InputFiled game Objecton End()!!!
-        Debug.Log(input); //will show in console if works properly as a saftey step
+        input = s;
     }
 }

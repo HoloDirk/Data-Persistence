@@ -953,6 +953,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b1535cd750728d343946e13ce6c59a1a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  InputName: {fileID: 369528442}
 --- !u!1 &1260028764
 GameObject:
   m_ObjectHideFlags: 0
@@ -1039,7 +1040,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1086602462}
         m_TargetAssemblyTypeName: MenuUIHandler, Assembly-CSharp
-        m_MethodName: StartNew
+        m_MethodName: StartGame
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1185,7 +1186,7 @@ GameObject:
   - component: {fileID: 1461474224}
   - component: {fileID: 1461474223}
   m_Layer: 5
-  m_Name: InputName
+  m_Name: ReadInput
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1627,6 +1628,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4b42a00b45f1918498561cba7f8464d3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  input: 
+  Score: 0
 --- !u!4 &2028512661
 Transform:
   m_ObjectHideFlags: 0
