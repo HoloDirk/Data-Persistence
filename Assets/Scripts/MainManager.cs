@@ -99,7 +99,7 @@ public class MainManager : MonoBehaviour
     {
         int currentScore = ReadInput.Instance.Score;
 
-        if(currentScore > bestScore)
+        if (currentScore > bestScore)
         {
             bestPlayer = ReadInput.Instance.input;
             bestScore = currentScore;
