@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement; //for scene movement of gameObjects
+using UnityEngine.UI;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -18,7 +19,6 @@ public class MenuUIHandler : MonoBehaviour
     {
         SceneManager.LoadScene(1);
     }
-
 
     // Update is called once per frame
     void Update()

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,6 +7,10 @@ using UnityEngine.UI;
 
 public class MainManager : MonoBehaviour
 {
+
+    public static MainManager Instance; //static class variable to allow sharing via instances 
+    public Text textInput; //variable to pass the etxt to the other scene
+
     public Brick BrickPrefab;
     public int LineCount = 6;
     public Rigidbody Ball;
@@ -18,7 +23,18 @@ public class MainManager : MonoBehaviour
     
     private bool m_GameOver = false;
 
-    
+    private void Awake() //Awake method
+    {
+        if (Instance != null) //conditional statement to check whether or not Instance is null
+        {
+            Destroy(gameObject); //first time that you launch the Menu scene, no MainManager will have filled the Instance variable. This means it will be null, so the condition will not be met, and the script will continue
+            return;
+        }
+
+        Instance = this; // if you load the Menu scene again later, there will already be one MainManager in existence, so Instance will not be null. In this case, the condition is met: the extra MainManager is destroyed and the script exits there.
+        DontDestroyOnLoad(gameObject); //this is a "singleton"
+    }
+
     // Start is called before the first frame update
     void Start()
     {
